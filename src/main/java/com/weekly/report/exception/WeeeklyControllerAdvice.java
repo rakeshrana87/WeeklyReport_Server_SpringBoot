@@ -26,14 +26,16 @@ public class WeeeklyControllerAdvice {
 		return error(io, HttpStatus.NOT_FOUND, io.getMessage());
 	}
 	
-	@ExceptionHandler(Exception.class)
+	/*@ExceptionHandler(Exception.class)
 	public ResponseEntity<WeeklyError> assertionException(final Exception ex) {
+		System.out.println("exception advice is called");
 		return error(ex, HttpStatus.NOT_FOUND, ex.getMessage());
-	}
+	}*/
 	
 	private ResponseEntity<WeeklyError> error(final Exception exception, final HttpStatus httpStatus,
 			final String logRef) {
-		final String message = Optional.of(exception.getMessage()).orElse(exception.getClass().getSimpleName());
+		System.out.println("exception: " + exception.getMessage());
+		final String message = exception.getMessage();//Optional.of(exception.getMessage()).orElse(exception.getClass().getSimpleName());
 		return new ResponseEntity<WeeklyError>(new WeeklyError(logRef, HttpStatus.INTERNAL_SERVER_ERROR.toString(),message), httpStatus);
 	}
 }

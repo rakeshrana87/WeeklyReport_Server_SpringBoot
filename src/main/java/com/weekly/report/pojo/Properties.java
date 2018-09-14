@@ -18,12 +18,12 @@ public class Properties {
 	public void setProperty(List<Property> property) {
 		this.property = property;
 	}
-	public String toString() {
+	/*public String toString() {
 		String string=null;
 		for(Property prop : property) {
 			string.concat(prop.toString());
 		}
 		
 		return string;
-	}
+	}*/
 }

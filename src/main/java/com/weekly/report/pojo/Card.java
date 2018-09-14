@@ -1,9 +1,14 @@
 package com.weekly.report.pojo;
 
+import java.lang.reflect.AccessibleObject;
+import java.lang.reflect.Field;
+
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
+
+import org.apache.commons.lang3.builder.ReflectionToStringBuilder;
 
 @XmlRootElement(name = "card")
 @XmlAccessorType(XmlAccessType.FIELD)
@@ -26,16 +31,16 @@ public class Card {
 	public void setCard_type(String card_type) {
 		this.card_type = card_type;
 	}
-	public int getId() {
+	public String getId() {
 		return id;
 	}
-	public void setId(int id) {
+	public void setId(String id) {
 		this.id = id;
 	}
-	public int getNumber() {
+	public String getNumber() {
 		return number;
 	}
-	public void setNumber(int number) {
+	public void setNumber(String number) {
 		this.number = number;
 	}
 	public String getProject() {
@@ -44,10 +49,10 @@ public class Card {
 	public void setProject(String project) {
 		this.project = project;
 	}
-	public int getVersion() {
+	public String getVersion() {
 		return version;
 	}
-	public void setVersion(int version) {
+	public void setVersion(String version) {
 		this.version = version;
 	}
 	public int getProject_card_rank() {
@@ -105,13 +110,13 @@ public class Card {
 	@XmlElement
 	private String card_type;
 	@XmlElement
-	private int id;
+	private String id;
 	@XmlElement
-	private int number;
+	private String number;
 	@XmlElement
 	private String project;
 	@XmlElement
-	private int version;
+	private String version;
 	@XmlElement
 	private int project_card_rank;
 	@XmlElement
@@ -128,6 +133,50 @@ public class Card {
 	private String tags;
 	@XmlElement
 	private String rendered_description;
-
-	
+public String toString() {
+	return printAllFields(this);  
+}
+	private String printAllFields(Card card) {
+StringBuilder builder = new StringBuilder();
+Class clas=card.getClass();
+       /* if (clazz.isArray()) {
+            this.reflectionAppendArray(this.getObject());
+            return;
+        }*/
+        Field[] fields = clas.getDeclaredFields();
+        AccessibleObject.setAccessible(fields, true);
+        for (Field field : fields) {
+            String fieldName = field.getName();
+         //   if (fieldName!=null/*this.accept(field)*/) {
+                try {
+                    // Warning: Field.get(Object) creates wrappers objects
+                    // for primitive types.
+                    Object fieldValue = field.get(this);
+                    
+                    if(fieldValue instanceof Properties || field.getName().equals("properties")) {
+                    	Properties props =(Properties)fieldValue;
+                    	for(Property pro:props.getProperty()) {
+                    	builder.append(pro.getName()).append(" ").append(pro.getValue()).append("\n");
+                    	}
+                    }
+                    if(field==null ) {
+                    	fieldValue="";
+                    }
+                    
+                    if(fieldName==null ) {
+                    	fieldName="";
+                    }
+                    
+                   builder.append(fieldName ).append(":  ").append(fieldValue).append("\n");
+                } catch (IllegalAccessException ex) {
+                    //this can't happen. Would get a Security exception
+                    // instead
+                    //throw a runtime exception in case the impossible
+                    // happens.
+                    throw new InternalError("Unexpected IllegalAccessException: " + ex.getMessage());
+                }
+           // }
+        }
+    return builder.toString();
+	}
 }
